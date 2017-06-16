@@ -1,18 +1,15 @@
 /**
 */
 
+#include "plist_reader.h"
+
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <cstring>
 
 
-int Plist::Readfile(const char *filepath)
-{
-    
-}
 
-int Plist::Readfile(const std::string &filepath)
+int Plist::Readfile(int filepath)
 {
     std::ifstream ifs(filepath);
     if (ifs.fail())

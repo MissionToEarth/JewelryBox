@@ -9,13 +9,14 @@
 #ifndef plist_reader_h
 #define plist_reader_h
 
+#include <string.h>
+
 class Plist
 {
 public:
     Plist() = default;
     ~Plist() = default;
-public:
-    int Readfile(const char *filepath);
+
     int Readfile(const std::string &filepath);
 };
 
