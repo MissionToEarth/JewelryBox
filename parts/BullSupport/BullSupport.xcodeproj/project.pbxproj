@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		3D03A2F41EF3E6DC005B6D4A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D03A2F31EF3E6DC005B6D4A /* main.cpp */; };
-		3D03A3001EF3F688005B6D4A /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D03A2FF1EF3F688005B6D4A /* libc++.tbd */; };
 		3D03A3081EF3F70E005B6D4A /* BullLocalizePlistSolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D03A3021EF3F6FC005B6D4A /* BullLocalizePlistSolution.cpp */; };
 		3D03A3091EF3F713005B6D4A /* plist_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D03A3041EF3F6FC005B6D4A /* plist_reader.cpp */; };
+		3D03A30F1EF3F884005B6D4A /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D03A30E1EF3F884005B6D4A /* libstdc++.6.0.9.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +34,8 @@
 		3D03A3031EF3F6FC005B6D4A /* BullLocalizePlistSolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BullLocalizePlistSolution.h; sourceTree = "<group>"; };
 		3D03A3041EF3F6FC005B6D4A /* plist_reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plist_reader.cpp; sourceTree = "<group>"; };
 		3D03A3051EF3F6FC005B6D4A /* plist_reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plist_reader.h; sourceTree = "<group>"; };
+		3D03A30A1EF3F82F005B6D4A /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
+		3D03A30E1EF3F884005B6D4A /* libstdc++.6.0.9.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.6.0.9.tbd"; path = "usr/lib/libstdc++.6.0.9.tbd"; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D03A3001EF3F688005B6D4A /* libc++.tbd in Frameworks */,
+				3D03A30F1EF3F884005B6D4A /* libstdc++.6.0.9.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +79,8 @@
 		3D03A2FE1EF3F688005B6D4A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3D03A30E1EF3F884005B6D4A /* libstdc++.6.0.9.tbd */,
+				3D03A30A1EF3F82F005B6D4A /* libstdc++.tbd */,
 				3D03A2FF1EF3F688005B6D4A /* libc++.tbd */,
 			);
 			name = Frameworks;
