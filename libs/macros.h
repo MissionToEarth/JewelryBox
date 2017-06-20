@@ -4,7 +4,13 @@
 
 #include "stdio.h"
 
-//#define DEBUG
+// dirty huck is indentation of namespace block.
+#define NAMESPACE_OPEN(_name) namespace _name {
+#define NAMESPACE_CLOSE(_name) }
+#define alice_namespace_open NAMESPACE_OPEN(ALICE)
+#define alice_namespace_close NAMESPACE_CLOSE(ALICE)
+
+alice_namespace_open
 
 //デバッグ用のLOGマクロ
 #ifdef DEBUG
@@ -27,3 +33,5 @@ printf("\n"); \
 printf(__VA_ARGS__); \
 printf("\n"); \
 }while(0)
+
+alice_namespace_close
