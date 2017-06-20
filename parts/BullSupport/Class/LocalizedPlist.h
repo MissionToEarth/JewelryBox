@@ -23,7 +23,7 @@
 #define TAG_VALUE_CLOSE  R"(</string>)"
 
 
-namespace BULL_LocalizedPlist
+namespace LocalizedPlist
 {
     //げろげろ　めんどい
     //class Conflict
@@ -53,35 +53,38 @@ namespace BULL_LocalizedPlist
 //        }
 //    }
 
-/** BULL localized plist への対応 */
-class Plist
-{
-public:
-    /** localized plist における key string に対応（dictなどに非対応[2017年6月20日]） */
-    using ASSOCIATIVE_MAP = std::unordered_map<std::string, std::string>;
-    
-public:
-    ASSOCIATIVE_MAP  m_values;
-    std::string m_source;
-    
-public:
-    Plist() = default;
-    ~Plist() = default;
-    
-    //    int Readfile(const std::string &filepath);
-    int Parse(const std::string &filepath);
-    
-private:
-    int ReadFile(const char* filepath);
-    ///
-    void make_pairs(const std::string &source);
-    
-    /** コンフリクトのパートを取り出す。
-     失敗する場合は空文字を返す。*/
-    std::string getConflictUnit();
-    
-};
-    
+    /** BULL localized plist への対応 */
+    class Plist
+    {
+    public:
+        /** localized の plist に使われる key string に対応（dictなどに非対応[2017年6月20日]） */
+        using ASSOCIATIVE_MAP = std::unordered_map<std::string, std::string>;
+        
+    public:
+        ASSOCIATIVE_MAP  m_values; //key / value のペアによるリスト
+        std::string m_source; //
+        
+    public:
+        Plist() = default;
+        ~Plist() = default;
+        
+        /** 正常なLocalized Plist を読み込む。key/valueペアのマップを作成する */
+        int Parse(const std::string &filepath);
+        
+    private:
+        int ReadFile(const char* filepath);
+        ///
+        ASSOCIATIVE_MAP MakePairs(const std::string &source);
+        
+        /** コンフリクトのパートを取り出す。
+         失敗する場合は空文字を返す。*/
+        std::string GetConflictUnit(const std::string &source, std::string::size_type cur_pos);
+        
+    public:
+        //テストコード
+        static void Test();
+    };
+
 }
 
 

@@ -9,6 +9,13 @@
 #ifndef StringUtilties_hpp
 #define StringUtilties_hpp
 
-#include <stdio.h>
+#include <fstream>
+#include <string.h>
+
+namespace StringHelper
+{
+    //ファイルポインタの移動
+    void Move(std::ifstream &target, const std::string &dest_key);
+}
 
 #endif /* StringUtilties_hpp */
