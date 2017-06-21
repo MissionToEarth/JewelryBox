@@ -1,7 +1,14 @@
 /**
 */
 
+#include "C_mix.h"
 
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+
+#include "LocalizedPlist.h"
 
 static std::string parse_c(const char *filepath)
 {

@@ -21,7 +21,7 @@ int main(int argc, const char * argv[])
 {
     printf("%s\n", argv[0] );
     
-    Test();
+//    Test();
     
     LocalizedPlist::Plist p;
     std::string str("/Users/t-harada/Documents/d3_develop/Resouce/conflict_tmp.plist");

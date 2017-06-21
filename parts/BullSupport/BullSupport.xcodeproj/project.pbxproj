@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3D03A2F41EF3E6DC005B6D4A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D03A2F31EF3E6DC005B6D4A /* main.cpp */; };
-		3D03A3081EF3F70E005B6D4A /* BullLocalizePlistSolution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D03A3021EF3F6FC005B6D4A /* BullLocalizePlistSolution.cpp */; };
+		3D03A3081EF3F70E005B6D4A /* C_mix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D03A3021EF3F6FC005B6D4A /* C_mix.cpp */; };
 		3D03A3091EF3F713005B6D4A /* LocalizedPlist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D03A3041EF3F6FC005B6D4A /* LocalizedPlist.cpp */; };
 		3D03A30F1EF3F884005B6D4A /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D03A30E1EF3F884005B6D4A /* libstdc++.6.0.9.tbd */; };
 		3D3EE5D61EF8D47500B0DA65 /* StringUtilties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D3EE5D41EF8D47500B0DA65 /* StringUtilties.cpp */; };
@@ -31,8 +31,8 @@
 		3D03A2F01EF3E6DC005B6D4A /* BullSupport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BullSupport; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D03A2F31EF3E6DC005B6D4A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		3D03A2FF1EF3F688005B6D4A /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
-		3D03A3021EF3F6FC005B6D4A /* BullLocalizePlistSolution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BullLocalizePlistSolution.cpp; sourceTree = "<group>"; };
-		3D03A3031EF3F6FC005B6D4A /* BullLocalizePlistSolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BullLocalizePlistSolution.h; sourceTree = "<group>"; };
+		3D03A3021EF3F6FC005B6D4A /* C_mix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = C_mix.cpp; sourceTree = "<group>"; };
+		3D03A3031EF3F6FC005B6D4A /* C_mix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = C_mix.h; sourceTree = "<group>"; };
 		3D03A3041EF3F6FC005B6D4A /* LocalizedPlist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LocalizedPlist.cpp; sourceTree = "<group>"; };
 		3D03A3051EF3F6FC005B6D4A /* LocalizedPlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalizedPlist.h; sourceTree = "<group>"; };
 		3D03A30A1EF3F82F005B6D4A /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
@@ -94,8 +94,8 @@
 		3D03A3011EF3F6FC005B6D4A /* Class */ = {
 			isa = PBXGroup;
 			children = (
-				3D03A3021EF3F6FC005B6D4A /* BullLocalizePlistSolution.cpp */,
-				3D03A3031EF3F6FC005B6D4A /* BullLocalizePlistSolution.h */,
+				3D03A3021EF3F6FC005B6D4A /* C_mix.cpp */,
+				3D03A3031EF3F6FC005B6D4A /* C_mix.h */,
 				3D03A3041EF3F6FC005B6D4A /* LocalizedPlist.cpp */,
 				3D03A3051EF3F6FC005B6D4A /* LocalizedPlist.h */,
 			);
@@ -180,7 +180,7 @@
 			files = (
 				3D03A3091EF3F713005B6D4A /* LocalizedPlist.cpp in Sources */,
 				3D3EE5D61EF8D47500B0DA65 /* StringUtilties.cpp in Sources */,
-				3D03A3081EF3F70E005B6D4A /* BullLocalizePlistSolution.cpp in Sources */,
+				3D03A3081EF3F70E005B6D4A /* C_mix.cpp in Sources */,
 				3D03A2F41EF3E6DC005B6D4A /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

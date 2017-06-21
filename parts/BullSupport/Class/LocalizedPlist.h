@@ -90,23 +90,44 @@ public:
 
 
 #pragma mark - ヘルパーメソッド
+
+/** Git： コンフリクトあるか？ */
+bool IsConflict(const std::string &source);
+
+/**
+    [要注意]：[2017年6月21日]現時点で 全ての文字列が UTF-8 である事を想定。　＝＞　全角文字への対応をしなければならない。
+ */
+
+/** 文字列のSplit */
+//std::vector<std::string> Split(std::string &source, const char delimiter[]);
+
+/** 文字列の範囲指定による置換：begin〜end の範囲を置き換える */
+void ReplaceWithRange(std::string &source, std::string::size_type begin, std::string::size_type end, const std::string replace);
+
 /** 指定した位置の　先頭行位置　を返す。 */
 std::string::size_type FindLineFrontWithPosition(const std::string &source, std::string::size_type pos);
 
 /** string　と　その文字列の位置　を与えられた時に、与えられた位置の次の行の先頭位置を返す。
- 失敗か、次の行がない場合には nposを返す。　*/
+ 失敗したらnposを返す。
+ 次の行がない場合は末尾の位置を返す。　*/
 std::string::size_type FindNextLine(const std::string &source, std::string::size_type pos);
+
+/** 指定した文字列が含まれる行を削除する。モード（0：無条件、1：行の先頭にある場合のみ。...） */
+void EraseFindLine(std::string &source, const std::string &search_string, short mode);
+
+/** git にてコンフリクトした際の記号を消す。 */
+//void EraseConflictSymbols(std::string &source);
+/** git にてコンフリクトした際の記号を消す。 */
 std::string EraseConflictSymbols(const std::string &source);
 
+/** key に重複があるかどうか */
+bool IsContainsDuplicate(const Plist::ASSOCIATIVE_MAP &p1, const Plist::ASSOCIATIVE_MAP &p2);
+
+/** 格納されたペアの数が同じで、key が重複していない。 */
+bool ComparePairs(const Plist::ASSOCIATIVE_MAP &p1, const Plist::ASSOCIATIVE_MAP &p2);
+
+
+
 NAMESPACE_CLOSE(LocalizedPlist)
-
-
-///** 想定: タグの基底クラス */
-//class PlistTagObject
-//{
-//};
-//class PlistTagDict{};
-//class PlistTagString{};
-
 
 #endif /* plist_reader_h */
