@@ -301,7 +301,16 @@ void Plist::Test()
 
 #pragma mark - ヘルパーメソッド
 
-std::string::size_type FindLineFrontWithPosition(const std::string &source, std::string::size_type pos);
+std::string::size_type FindLineFrontWithPosition(const std::string &source, std::string::size_type pos)
+{
+    auto front = source.rfind("\n", pos);
+    if (front == string::npos)
+    {
+        // 改行がない場合は先頭位置でしょう。
+        return 0;
+    }
+    return front;
+}
 
 std::string::size_type FindNextLine(const std::string &source, std::string::size_type pos)
 {
@@ -316,7 +325,7 @@ std::string::size_type FindNextLine(const std::string &source, std::string::size
 std::string EraseConflictSymbols(const std::string &source)
 {
     std::string ret(source);
-    auto conflict_line = ret.find(TAG_CONFLICT_HEAD);
+    std::string::size_type conflict_line = ret.find(TAG_CONFLICT_HEAD);
     if (conflict_line != string::npos)
     {
         auto next_line = FindNextLine(ret, conflict_line);

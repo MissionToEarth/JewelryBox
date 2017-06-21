@@ -10,4 +10,11 @@
 #define BullLocalizePlistSolution_h
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+    extern int csub(char const *param);
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 #endif /* BullLocalizePlistSolution_h */
