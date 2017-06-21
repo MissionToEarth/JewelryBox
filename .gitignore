@@ -1,6 +1,11 @@
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcworkspace/contents.xcworkspacedata
-parts/BullSupport/BullSupport.xcodeproj/xcuserdata/*
+parts/BullSupport/BullSupport.xcodeproj/xcuserdata/
+parts/BullSupport/BullSupport.xcodeproj/project.xcworkspace/xcuserdata/
 .DS_Store
 
+
+# 一旦入れておくが、時折注意しておく。
+build/
+DerivedData/

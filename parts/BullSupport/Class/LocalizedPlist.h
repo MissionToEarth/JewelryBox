@@ -76,12 +76,9 @@ public:
     
 private:
     int ReadFile(const char* filepath);
+    int WriteFile(const char* filepath, const std::string &source);
     ///
     ASSOCIATIVE_MAP MakePairs(const std::string &source);
-    
-    /** コンフリクトのパートを取り出す。
-     失敗する場合は空文字を返す。*/
-    std::string GetConflictUnit(const std::string &source, std::string::size_type cur_pos);
     
 public:
     //テストコード
@@ -93,6 +90,14 @@ public:
 
 /** Git： コンフリクトあるか？ */
 bool IsConflict(const std::string &source);
+
+/** Git:　コンフリクトした部分のHEAD部か、変更部を取得 */
+std::string GetConflictPart(const std::string &conflict_unit, bool part);
+
+/** コンフリクトのパートを取り出す。
+ 失敗する場合は空文字を返す。*/
+std::string GetConflictUnit(const std::string &source, std::string::size_type cur_pos);
+
 
 /**
     [要注意]：[2017年6月21日]現時点で 全ての文字列が UTF-8 である事を想定。　＝＞　全角文字への対応をしなければならない。

@@ -15,21 +15,21 @@ alice_namespace_open
 //デバッグ用のLOGマクロ
 #ifdef DEBUG
 //
-#define LOG(...) do{ \
+#define DDD_LOG(...) do{ \
 printf(__VA_ARGS__); \
 printf("\n"); \
 }while(0)
 //
-#define LOG_WARN(...) do{ \
+#define DDD_LOG_WARN(...) do{ \
 printf(__VA_ARGS__); \
 printf("\n"); \
 }while(0)
 #else   //
-#define LOG(...)
-#define LOG_WARN(...)
+#define DDD_LOG(...)
+#define DDD_LOG_WARN(...)
 #endif  // END OF DEBUG LOG MACRO
 
-#define LOG_ERROR(...) do{ \
+#define DDD_LOG_ERROR(...) do{ \
 printf(__VA_ARGS__); \
 printf("\n"); \
 }while(0)

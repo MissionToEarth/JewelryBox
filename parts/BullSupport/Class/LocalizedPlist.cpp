@@ -22,7 +22,7 @@ static void DumpPairs(Plist::ASSOCIATIVE_MAP pairs)
 {
     for (auto v : pairs)
     {
-        LOG("key= %s\nvalue= %s", v.first.c_str(), v.second.c_str());
+        DDD_LOG("key= %s\nvalue= %s", v.first.c_str(), v.second.c_str());
     }
 }
 
@@ -31,17 +31,48 @@ static void DumpPairs(Plist::ASSOCIATIVE_MAP pairs)
 
 int Plist::Parse(const std::string &filepath)
 {
-    int ret = ReadFile(filepath.c_str());
-    if ( ret != 0)
-    {
-        LOG_WARN("読み込み失敗 : %s", filepath.c_str());
-        assert(false);
-        exit(EXIT_FAILURE);
-    }
+    ReadFile(filepath.c_str());
     string source = m_source;
     
     
     if (IsConflict(source))
+    {
+        //コンフリクトしている場合は...。
+        while(1)
+        {
+            auto pos = source.find(TAG_CONFLICT_HEAD);
+            auto front = FindLineFrontWithPosition(source, pos);
+            if (pos != front)
+            {
+                assert(false);
+                continue;
+            }
+            auto last = source.find(TAG_CONFLICT_END);
+            last = FindNextLine(source, last);
+            
+            string conflict = source.substr(front, last - front);
+            DDD_LOG("%s", conflict.c_str());
+            string head = GetConflictPart(conflict, true);
+            string changed = GetConflictPart(conflict, false);
+            
+            auto head_map = MakePairs(head);
+            auto changed_map = MakePairs(changed);
+            if (ComparePairs(head_map, changed_map))
+            {
+                head += changed;
+                DDD_LOG("[%s]", head.c_str());
+                source.replace(front, last - front, head);
+                DDD_LOG("[%s]", source.c_str());
+            }
+            
+            // TODO: 終端に来たらbreak
+            break;
+        }
+        //　source で上書きするけど、Parse()内部でやったら Parse()じゃなくなっちゃうから移そう。
+        WriteFile("/Users/t-harada/Documents/d3_develop/Resouce/ceb_plot.plist", source);
+        
+    }
+    else
     {
         string key("");
         string value("");
@@ -66,22 +97,41 @@ int Plist::Parse(const std::string &filepath)
     return 0;
 }
 
+
 int Plist::ReadFile(const char* filepath)
 {
     std::ifstream ifs(filepath);
     if (ifs.fail())
     {
-        std::cerr << "失敗" << std::endl;
+        ifs.close();
+        DDD_LOG_WARN("ifstream 失敗 : %s", filepath);
         assert(false);
-        return -1;
+        exit(EXIT_FAILURE);
     }
     
     //バッファ
     m_source = std::string((std::istreambuf_iterator<char>(ifs))
                            , std::istreambuf_iterator<char>());
-    
+    ifs.close();
     return 0;
 }
+
+
+int Plist::WriteFile(const char *filepath, const std::string &source)
+{
+    std::ofstream ofs(filepath, std::ofstream::out);
+    if (ofs.fail())
+    {
+        ofs.close();
+        DDD_LOG_WARN("ofstream 失敗 : %s", filepath);
+        assert(false);
+        exit(EXIT_FAILURE);
+    }
+    
+    ofs.write(source.c_str(), source.size());
+    return 0;
+}
+
 
 /** 以下の形式が繰り返しているものに対応する。コンフリクトがある場合には対応していない。
  <key>xxx</key>\n
@@ -121,51 +171,6 @@ Plist::ASSOCIATIVE_MAP Plist::MakePairs(const std::string &source)
     
     
     return pairs;
-}
-
-std::string Plist::GetConflictUnit(const std::string &source, std::string::size_type cur_pos)
-{
-    string::size_type pos = source.find(TAG_CONFLICT_HEAD, cur_pos);
-    string::size_type end = source.find(TAG_CONFLICT_END, pos);
-    pos = source.find("\n", pos) + strlen("\n");
-    string ret = source.substr(pos, end - pos);
-    
-    //        LOG("%s", ret.c_str());
-    return ret;
-}
-
-std::string GetConflictPart(const std::string &conflict_unit, bool part)
-{
-    LOG("%s", __PRETTY_FUNCTION__);
-    
-    string::size_type begin = 0;
-    if (conflict_unit.find(TAG_CONFLICT_HEAD) != string::npos)
-    {
-        
-        LOG("conflict開始行を削除しないとヤカン。");
-        assert(false);
-        exit(EXIT_FAILURE);
-    }
-    
-    string::size_type mid_pos = conflict_unit.find(TAG_CONFLICT_MID);
-    if (part)
-    {
-        //HEAD部取得
-        string head = conflict_unit.substr(begin, mid_pos);
-        
-        LOG("%s", head.c_str());
-        return head;
-    }
-    else
-    {
-        
-        //相手の変更部取得
-        mid_pos += strlen(TAG_CONFLICT_MID);
-        string changed = conflict_unit.substr(mid_pos);
-        
-        LOG("%s", changed.c_str());
-        return changed;
-    }
 }
 
 
@@ -222,47 +227,53 @@ void Plist::Test()
     }
     {
         string test("abcdefz");
-        LOG("[%s]", test.substr(test.length() - 1).c_str());
+        DDD_LOG("[%s]", test.substr(test.length() - 1).c_str());
         string gust("abcdefあz");
-        LOG("[%s]", gust.substr(gust.length() - 1).c_str());
+        DDD_LOG("[%s]", gust.substr(gust.length() - 1).c_str());
         gust.push_back('\n');
-        LOG("末尾に改行追加：[%s]：", gust.c_str());
-        LOG("erase:[%s]", gust.erase(1, gust.length()).c_str());
+        DDD_LOG("末尾に改行追加：[%s]：", gust.c_str());
+        DDD_LOG("erase:[%s]", gust.erase(1, gust.length()).c_str());
         string east("abcイロハ");
-        LOG("[%s]", east.substr(east.length() - 3).c_str());//全角文字の場合は、length()などで考慮されていないので、困る。
+        DDD_LOG("[%s]", east.substr(east.length() - 3).c_str());//全角文字の場合は、length()などで考慮されていないので、困る。
     }
     {
         string tmp("aaaaaa\nbbbbbbbbbb\ncccccccccc");
         auto ret01 = FindNextLine(tmp, 0);
         auto ret02 = FindNextLine(tmp, 10);
-        LOG("1 [%s]", tmp.substr(ret01).c_str());
-        LOG("2 [%s]", tmp.substr(ret02).c_str());
+        DDD_LOG("1 [%s]", tmp.substr(ret01).c_str());
+        DDD_LOG("2 [%s]", tmp.substr(ret02).c_str());
     }
     {
         string test(TEST_DATA);
         EraseFindLine(test, TAG_CONFLICT_HEAD, 0);
-        LOG("==erase conflict head==\n[%s]", test.c_str());
+        DDD_LOG("==erase conflict head==\n[%s]", test.c_str());
         test = std::string(TEST_DATA);
         EraseFindLine(test, TAG_CONFLICT_HEAD, 1);
         EraseFindLine(test, TAG_CONFLICT_END, 1);
-        LOG("==erase conflict head mode:1==\n[%s]", test.c_str());
+        DDD_LOG("==erase conflict head mode:1==\n[%s]", test.c_str());
     }
     {
         string tmp = EraseConflictSymbols(TEST_DATA);
-        LOG("==EraseConflictSymbols==\n[%s]", tmp.c_str());
+        DDD_LOG("==EraseConflictSymbols==\n[%s]", tmp.c_str());
     }
     
     Plist p;
-    string conflict_01 = p.GetConflictUnit(TEST_DATA, 0);
-    LOG("==GetConflictUnit==\n[%s]", conflict_01.c_str());
+    string conflict_01 = GetConflictUnit(TEST_DATA, 0);
+    DDD_LOG("==GetConflictUnit==\n[%s]", conflict_01.c_str());
     
     ASSOCIATIVE_MAP changed = p.MakePairs(GetConflictPart(conflict_01, false));
     ASSOCIATIVE_MAP head = p.MakePairs(GetConflictPart(conflict_01, true) );
     DumpPairs(head);
     DumpPairs(changed);
     
-    LOG(IsContainsDuplicate(head, changed) ? "重複している　key　がある" : "重複していない key はそれぞれ");
-    LOG(ComparePairs(head, changed) ? "keyはバラバラ、数は一致" : "意図しない状態");
+    DDD_LOG(IsContainsDuplicate(head, changed) ? "重複している　key　がある" : "重複していない key はそれぞれ");
+    DDD_LOG(ComparePairs(head, changed) ? "数は一致して、keyはそれぞれに固有" : "意図しない状態");
+    
+    if (ComparePairs(head, changed))
+    {
+        EraseFindLine(conflict_01, TAG_CONFLICT_MID, 1);
+        
+    }
     
     assert(false);
 }
@@ -284,6 +295,49 @@ bool IsConflict(const std::string &source)
     }
     
     return false;
+}
+
+
+std::string GetConflictPart(const std::string &conflict_unit, bool part)
+{
+    DDD_LOG("%s", __PRETTY_FUNCTION__);
+    
+    string::size_type begin = conflict_unit.find(TAG_CONFLICT_HEAD);
+    assert(begin == 0);
+    if (begin != string::npos)
+    {
+        begin = FindNextLine(conflict_unit, begin);
+    }
+    
+    string::size_type mid_pos = conflict_unit.find(TAG_CONFLICT_MID);
+    if (part)
+    {
+        //HEAD部取得
+        string head = conflict_unit.substr(begin, mid_pos - begin);
+        DDD_LOG("%s",head.c_str());
+        return head;
+    }
+    else
+    {
+        //相手の変更部取得
+        mid_pos = FindNextLine(conflict_unit, mid_pos);
+        string changed = conflict_unit.substr(mid_pos);
+        EraseFindLine(changed, TAG_CONFLICT_END, 1);
+        DDD_LOG("%s", changed.c_str());
+        return changed;
+    }
+}
+
+
+std::string GetConflictUnit(const std::string &source, std::string::size_type cur_pos)
+{
+    string::size_type pos = source.find(TAG_CONFLICT_HEAD, cur_pos);
+    string::size_type end = source.find(TAG_CONFLICT_END, pos);
+    pos = source.find("\n", pos) + strlen("\n");
+    string ret = source.substr(pos, end - pos);
+    
+    //        DDD_LOG("%s", ret.c_str());
+    return ret;
 }
 
 
@@ -318,7 +372,7 @@ std::string::size_type FindNextLine(const std::string &source, std::string::size
     }
     catch(std::exception ex)
     {
-        LOG("%s", ex.what());
+        DDD_LOG("%s", ex.what());
         assert(false);
         return string::npos;
     }
