@@ -6,19 +6,34 @@
 //
 //
 
+#include "LocalizedPlist.h"
+
 #include <iostream>
 #include <stdio.h>
-#include "plist_reader.h"
+#include <string.h>
 
+void Test()
+{
+    LocalizedPlist::Plist::Test();
+}
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+int main(int argc, const char * argv[])
+{
+    printf("%s\n", argv[0] );
     
-    Plist p;
-    std::string str("aaa");
-    p.Readfile(str);
+//    Test();
+    
+    LocalizedPlist::Plist p;
+    std::string str("/Users/t-harada/Documents/d3_develop/Resouce/conflict_tmp.plist");
+    p.Parse(str.c_str());
     
     
+    
+    //プログラム一旦止めるため、cinさせる。
+    int n=0;
+    std::string s;
+    std::cin >> n >> s;
+    printf("%d,%s", n, s.c_str());
+
     return 0;
 }

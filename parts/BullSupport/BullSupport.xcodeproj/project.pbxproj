@@ -8,27 +8,35 @@
 
 /* Begin PBXBuildFile section */
 		3D03A2F41EF3E6DC005B6D4A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D03A2F31EF3E6DC005B6D4A /* main.cpp */; };
+		3D03A3081EF3F70E005B6D4A /* C_mix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D03A3021EF3F6FC005B6D4A /* C_mix.cpp */; };
+		3D03A3091EF3F713005B6D4A /* LocalizedPlist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D03A3041EF3F6FC005B6D4A /* LocalizedPlist.cpp */; };
+		3D3EE5DC1EFA542700B0DA65 /* StringUtilties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D3EE5DA1EFA542700B0DA65 /* StringUtilties.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		3D03A2EE1EF3E6DC005B6D4A /* CopyFiles */ = {
+		3D03A2EE1EF3E6DC005B6D4A /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3D03A2EA1EF3E665005B6D4A /* BullLocalizePlistSolution.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BullLocalizePlistSolution.cpp; sourceTree = "<group>"; };
-		3D03A2EB1EF3E665005B6D4A /* plist_reader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = plist_reader.cpp; sourceTree = "<group>"; };
 		3D03A2F01EF3E6DC005B6D4A /* BullSupport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BullSupport; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D03A2F31EF3E6DC005B6D4A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		3D03A2F81EF3E88D005B6D4A /* plist_reader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = plist_reader.h; sourceTree = "<group>"; };
-		3D03A2F91EF3E896005B6D4A /* BullLocalizePlistSolution.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BullLocalizePlistSolution.h; sourceTree = "<group>"; };
+		3D03A2FF1EF3F688005B6D4A /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		3D03A3021EF3F6FC005B6D4A /* C_mix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = C_mix.cpp; sourceTree = "<group>"; };
+		3D03A3031EF3F6FC005B6D4A /* C_mix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = C_mix.h; sourceTree = "<group>"; };
+		3D03A3041EF3F6FC005B6D4A /* LocalizedPlist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LocalizedPlist.cpp; sourceTree = "<group>"; };
+		3D03A3051EF3F6FC005B6D4A /* LocalizedPlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalizedPlist.h; sourceTree = "<group>"; };
+		3D3EE5D81EFA542700B0DA65 /* macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = macros.h; path = "../../libs/C++/macros.h"; sourceTree = "<group>"; };
+		3D3EE5DA1EFA542700B0DA65 /* StringUtilties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringUtilties.cpp; sourceTree = "<group>"; };
+		3D3EE5DB1EFA542700B0DA65 /* StringUtilties.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StringUtilties.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,21 +53,12 @@
 		3D03A2E21EF3E64D005B6D4A = {
 			isa = PBXGroup;
 			children = (
+				3D3EE5D71EFA541800B0DA65 /* libs */,
+				3D03A3011EF3F6FC005B6D4A /* Class */,
 				3D03A2F21EF3E6DC005B6D4A /* BullSupport */,
 				3D03A2F11EF3E6DC005B6D4A /* Products */,
+				3D03A2FE1EF3F688005B6D4A /* Frameworks */,
 			);
-			sourceTree = "<group>";
-		};
-		3D03A2E91EF3E665005B6D4A /* bull_localized_plist */ = {
-			isa = PBXGroup;
-			children = (
-				3D03A2EA1EF3E665005B6D4A /* BullLocalizePlistSolution.cpp */,
-				3D03A2F91EF3E896005B6D4A /* BullLocalizePlistSolution.h */,
-				3D03A2EB1EF3E665005B6D4A /* plist_reader.cpp */,
-				3D03A2F81EF3E88D005B6D4A /* plist_reader.h */,
-			);
-			name = bull_localized_plist;
-			path = ../../bull_localized_plist;
 			sourceTree = "<group>";
 		};
 		3D03A2F11EF3E6DC005B6D4A /* Products */ = {
@@ -73,10 +72,47 @@
 		3D03A2F21EF3E6DC005B6D4A /* BullSupport */ = {
 			isa = PBXGroup;
 			children = (
-				3D03A2E91EF3E665005B6D4A /* bull_localized_plist */,
 				3D03A2F31EF3E6DC005B6D4A /* main.cpp */,
 			);
 			path = BullSupport;
+			sourceTree = "<group>";
+		};
+		3D03A2FE1EF3F688005B6D4A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3D03A2FF1EF3F688005B6D4A /* libc++.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3D03A3011EF3F6FC005B6D4A /* Class */ = {
+			isa = PBXGroup;
+			children = (
+				3D03A3021EF3F6FC005B6D4A /* C_mix.cpp */,
+				3D03A3031EF3F6FC005B6D4A /* C_mix.h */,
+				3D03A3041EF3F6FC005B6D4A /* LocalizedPlist.cpp */,
+				3D03A3051EF3F6FC005B6D4A /* LocalizedPlist.h */,
+			);
+			path = Class;
+			sourceTree = "<group>";
+		};
+		3D3EE5D71EFA541800B0DA65 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				3D3EE5D81EFA542700B0DA65 /* macros.h */,
+				3D3EE5D91EFA542700B0DA65 /* Utilities */,
+			);
+			name = libs;
+			sourceTree = "<group>";
+		};
+		3D3EE5D91EFA542700B0DA65 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				3D3EE5DA1EFA542700B0DA65 /* StringUtilties.cpp */,
+				3D3EE5DB1EFA542700B0DA65 /* StringUtilties.hpp */,
+			);
+			name = Utilities;
+			path = "../../libs/C++/Utilities";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -88,7 +124,7 @@
 			buildPhases = (
 				3D03A2EC1EF3E6DC005B6D4A /* Sources */,
 				3D03A2ED1EF3E6DC005B6D4A /* Frameworks */,
-				3D03A2EE1EF3E6DC005B6D4A /* CopyFiles */,
+				3D03A2EE1EF3E6DC005B6D4A /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -136,6 +172,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D03A3091EF3F713005B6D4A /* LocalizedPlist.cpp in Sources */,
+				3D3EE5DC1EFA542700B0DA65 /* StringUtilties.cpp in Sources */,
+				3D03A3081EF3F70E005B6D4A /* C_mix.cpp in Sources */,
 				3D03A2F41EF3E6DC005B6D4A /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,6 +236,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/Class";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -242,6 +282,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/Class";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -269,6 +310,7 @@
 				3D03A2F71EF3E6DC005B6D4A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
