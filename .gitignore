@@ -1,6 +1,6 @@
-
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcworkspace/contents.xcworkspacedata
+parts/BullSupport/BullSupport.xcodeproj/xcuserdata/*
 .DS_Store
 
