@@ -3,6 +3,7 @@ INCLUDE := -I./Main/ -I./Main/Class/ -I../../libs/C++
 SRCS := Main/main.cpp
 SRCS += Main/Class/LocalizedPlist.cpp
 OBJS := $(SRCS:%.cpp=%.o)
+OUTDIR := Build
 
 # コンパイルのオプションだと思うぜ。
 CFLAGS = -M -rdynamic 
@@ -14,10 +15,11 @@ ifeq (ad,ad)
 CFLAGS += -g -Isub_dir
 endif
 
-
-test3: main.o LocalizedPlist.o
+.PHONY:app
+$(OUTDIR)/app: $(OUTDIR)/main.o $(OUTDIR)/LocalizedPlist.o
+	-mkdir $(OUTDIR)/
 	g++ -std=c++11 -lc $(INCLUDE) -o $@ $^
-main.o: Main/main.cpp
+$(OUTDIR)/main.o: Main/main.cpp
 	g++ -std=c++11 -lc $(INCLUDE) -o $@ -c $^
-LocalizedPlist.o: Main/Class/LocalizedPlist.cpp
+$(OUTDIR)/LocalizedPlist.o: Main/Class/LocalizedPlist.cpp
 	g++ -std=c++11 -lc $(INCLUDE) -o $@ -c $^
