@@ -78,7 +78,7 @@ private:
     int ReadFile(const char* filepath);
     int WriteFile(const char* filepath, const std::string &source);
     ///
-    ASSOCIATIVE_MAP MakePairs(const std::string &source);
+    ASSOCIATIVE_MAP MakeKeyStringPairs(const std::string &source);
     
 public:
     //テストコード
@@ -121,8 +121,6 @@ std::string::size_type FindNextLine(const std::string &source, std::string::size
 void EraseFindLine(std::string &source, const std::string &search_string, short mode);
 
 /** git にてコンフリクトした際の記号を消す。 */
-//void EraseConflictSymbols(std::string &source);
-/** git にてコンフリクトした際の記号を消す。 */
 std::string EraseConflictSymbols(const std::string &source);
 
 /** key に重複があるかどうか */
@@ -131,6 +129,11 @@ bool IsContainsDuplicate(const Plist::ASSOCIATIVE_MAP &p1, const Plist::ASSOCIAT
 /** 格納されたペアの数が同じで、key が重複していない。 */
 bool ComparePairs(const Plist::ASSOCIATIVE_MAP &p1, const Plist::ASSOCIATIVE_MAP &p2);
 
+/** <string>だけのコンフリクト部分として、比較する。
+    パラメタはそれぞれ、"<string>xxxxx</string>" というパートが１つだけ含まれているとする。
+    return true : タグに囲まれた内容が一致しない場合。
+    return false : それ以外 */
+bool NotMatchStringValue(const std::string &left, const std::string &right);
 
 
 NAMESPACE_CLOSE(LocalizedPlist)

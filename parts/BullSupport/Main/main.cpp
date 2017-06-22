@@ -26,14 +26,6 @@ int main(int argc, const char * argv[])
     LocalizedPlist::Plist p;
     std::string str("/Users/t-harada/Documents/d3_develop/Resouce/conflict_tmp.plist");
     p.Parse(str.c_str());
-    
-    
-    
-    //プログラム一旦止めるため、cinさせる。
-    int n=0;
-    std::string s;
-    std::cin >> n >> s;
-    printf("%d,%s", n, s.c_str());
 
     return 0;
 }

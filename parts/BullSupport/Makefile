@@ -10,11 +10,11 @@ APP_LDFLAGS = -latomic
 CXX := gcc
 
 ifeq (ad,ad)
-CFLAGS += -g
+CFLAGS += -g -Isub_dir
 endif
 
 
-aaaa: $(APPLICATION)
+main: $(APPLICATION)
 	ls $(CFLAGS)
 	ls $(SRCS)
 
@@ -22,7 +22,7 @@ aaaa: $(APPLICATION)
 	gcc -c $<
 
 $(APPLICATION): $(OBJS)
-	$(CXX) $(INCLUDE) -o $@ $^
+	$(CXX) $(CFLAGS) $(INCLUDE) -o $@ $^
 
 
 
