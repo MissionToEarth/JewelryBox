@@ -426,7 +426,7 @@ void EraseFindLine(std::string &source, const std::string &search_string, short 
             //先頭にある場合のみ消す。
         {
             string::size_type pos = source.find(search_string);
-            typeof(pos) front = 0;
+            decltype(pos) front = 0;
             while( pos != string::npos )
             {
                 front = FindLineFrontWithPosition(source, pos);
@@ -456,7 +456,7 @@ std::string EraseConflictSymbols(const std::string &source)
 {
     std::string ret(source);
     std::string::size_type conflict_line = 0;
-    typeof(conflict_line) next_line = 0;
+    decltype(conflict_line) next_line = 0;
     while(conflict_line != string::npos)
     {
         conflict_line = ret.find(TAG_CONFLICT_HEAD, conflict_line);
