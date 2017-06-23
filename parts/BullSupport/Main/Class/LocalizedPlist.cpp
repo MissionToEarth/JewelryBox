@@ -29,84 +29,95 @@ static void DumpPairs(Plist::ASSOCIATIVE_MAP pairs)
 
 #pragma mark - Member of Plist
 
-int Plist::Parse(const std::string &filepath)
+int Plist::Pars(const std::string &source)
+{
+    string key("");
+    string value("");
+    string::size_type close_n = 0;
+    for (string::size_type n = 0; (n = source.find(TAG_KEY, n)) != string::npos; n++)
+    {
+        //コンフリクトに未対応。
+        n += strlen(TAG_KEY);
+        close_n = source.find(TAG_KEY_CLOSE, n);
+        key = source.substr(n, close_n - n);
+        
+        n = source.find(TAG_VALUE, n);
+        n += strlen(TAG_VALUE);
+        close_n = source.find(TAG_VALUE_CLOSE, n);
+        value = source.substr(n, close_n - n);
+        
+        m_values.insert(std::make_pair(key, value));
+    }
+    DumpPairs(m_values);
+    
+    return 0;
+}
+
+
+int Plist::Resolve(const std::string &filepath)
 {
     ReadFile(filepath.c_str());
     string source = m_source;
-    
-    
-    if (IsConflict(source))
+    if (source.find(R"(<plist )") == string::npos)
     {
-        //コンフリクトしている場合は...。
-        string::size_type pos = source.find(TAG_CONFLICT_HEAD);
-        while (pos != string::npos)
-        {
-            if (pos == string::npos) {
-                break;
-            }
-            auto front = FindLineFrontWithPosition(source, pos);
-            if (pos != front)
-            {
-                assert(false);
-                continue;
-            }
-            auto last = source.find(TAG_CONFLICT_END, pos);
-            last = FindNextLine(source, last);
-            
-            DDD_LOG("%s", source.c_str());
-            assert(front < last);
-            
-            string conflict = source.substr(front, last - front);
-            DDD_LOG("%s", conflict.c_str());
-            string head = GetConflictPart(conflict, true);
-            string changed = GetConflictPart(conflict, false);
-            
-            auto head_map = MakeKeyStringPairs(head);
-            auto changed_map = MakeKeyStringPairs(changed);
-            if (ComparePairs(head_map, changed_map))
-            {
-                head += changed;
-                DDD_LOG("[%s]", head.c_str());
-                source.replace(front, last - front, head);
-                DDD_LOG("[%s]", source.c_str());
-                pos = front;//ソース更新に対応するため、位置を戻す
-            }
-            else if (head_map.size() <= 0 && changed_map.size() <= 0 && NotMatchStringValue(head, changed))
-            {
-                DDD_LOG("[%s]", changed.c_str());
-                source.replace(front, last - front, changed);
-                DDD_LOG("[%s]", source.c_str());
-                pos = front;//ソース更新に対応するため、位置を戻す
-            }
-
-            pos = source.find(TAG_CONFLICT_HEAD, ++pos);
+        DDD_LOG("指定されたファイルは、plistではありません。");
+        assert(false);
+        exit(EXIT_FAILURE);
+    }
+    
+    
+    if (!IsConflict(source))
+    {
+        DDD_LOG("%s : コンフリクトしていない。", filepath.c_str());
+        return 0;
+    }
+    
+    //コンフリクトしている場合は...。
+    string::size_type pos = source.find(TAG_CONFLICT_HEAD);
+    while (pos != string::npos)
+    {
+        if (pos == string::npos) {
+            break;
         }
-            
-        //　source で上書きするけど、Parse()内部でやったら Parse()じゃなくなっちゃうから移そう。
-        WriteFile("/Users/t-harada/Documents/d3_develop/Resouce/ceb_plot.plist", source);
+        auto front = FindLineFrontWithPosition(source, pos);
+        if (pos != front)
+        {
+            assert(false);
+            continue;
+        }
+        auto last = source.find(TAG_CONFLICT_END, pos);
+        last = FindNextLine(source, last);
         
-    }
-    else
-    {
-        string key("");
-        string value("");
-        string::size_type close_n = 0;
-        for (string::size_type n = 0; (n = source.find(TAG_KEY, n)) != string::npos; n++)
+        DDD_LOG("%s", source.c_str());
+        assert(front < last);
+        
+        string conflict = source.substr(front, last - front);
+        DDD_LOG("%s", conflict.c_str());
+        string head = GetConflictPart(conflict, true);
+        string changed = GetConflictPart(conflict, false);
+        
+        auto head_map = MakeKeyStringPairs(head);
+        auto changed_map = MakeKeyStringPairs(changed);
+        if (ComparePairs(head_map, changed_map))
         {
-            //コンフリクトに未対応。
-            n += strlen(TAG_KEY);
-            close_n = source.find(TAG_KEY_CLOSE, n);
-            key = source.substr(n, close_n - n);
-            
-            n = source.find(TAG_VALUE, n);
-            n += strlen(TAG_VALUE);
-            close_n = source.find(TAG_VALUE_CLOSE, n);
-            value = source.substr(n, close_n - n);
-            
-            m_values.insert(std::make_pair(key, value));
+            head += changed;
+            DDD_LOG("[%s]", head.c_str());
+            source.replace(front, last - front, head);
+            DDD_LOG("[%s]", source.c_str());
+            pos = front;//ソース更新に対応するため、位置を戻す
         }
+        else if (head_map.size() <= 0 && changed_map.size() <= 0 && NotMatchStringValue(head, changed))
+        {
+            DDD_LOG("[%s]", changed.c_str());
+            source.replace(front, last - front, changed);
+            DDD_LOG("[%s]", source.c_str());
+            pos = front;//ソース更新に対応するため、位置を戻す
+        }
+        
+        pos = source.find(TAG_CONFLICT_HEAD, ++pos);
     }
-    DumpPairs(m_values);
+    
+    WriteFile("/Users/t-harada/Documents/d3_develop/Resouce/ceb_plot.plist", source);
     
     return 0;
 }
@@ -118,7 +129,7 @@ int Plist::ReadFile(const char* filepath)
     if (ifs.fail())
     {
         ifs.close();
-        DDD_LOG_WARN("ifstream 失敗 : %s", filepath);
+        DDD_LOG_WARN("ifstream で file open に失敗 : %s", filepath);
         assert(false);
         exit(EXIT_FAILURE);
     }
@@ -137,12 +148,14 @@ int Plist::WriteFile(const char *filepath, const std::string &source)
     if (ofs.fail())
     {
         ofs.close();
-        DDD_LOG_WARN("ofstream 失敗 : %s", filepath);
+        DDD_LOG_WARN("ofstream で file open に失敗 : %s", filepath);
         assert(false);
         exit(EXIT_FAILURE);
     }
     
     ofs.write(source.c_str(), source.size());
+    ofs.close();
+    
     return 0;
 }
 
@@ -188,6 +201,7 @@ Plist::ASSOCIATIVE_MAP Plist::MakeKeyStringPairs(const std::string &source)
 
 
 #pragma mark - テスト
+
 /** テスト用データ */
 const char* TEST_DATA = R"(<plist version="1.0">
 <dict>

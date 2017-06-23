@@ -71,9 +71,11 @@ public:
     Plist() = default;
     ~Plist() = default;
     
-    /** 正常なLocalized Plist を読み込む。key/valueペアのマップを作成する */
-    int Parse(const std::string &filepath);
+    /** plist形式の、key／valueタグをマップに格納する。 */
+    int Pars(const std::string &source);
     
+    /** 正常なLocalized Plist を読み込む。key/valueペアのマップを作成する */
+    int Resolve(const std::string &filepath);
 private:
     int ReadFile(const char* filepath);
     int WriteFile(const char* filepath, const std::string &source);
