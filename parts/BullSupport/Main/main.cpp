@@ -20,16 +20,18 @@ void Test()
 /** 引数を２つ受け取る。 */
 int main(int argc, const char * argv[])
 {
+    printf("%s\n", argv[0]);
+    
     if (argc < 2)
     {
-        DDD_LOG("引数が足りない。localized用plistファイルへのパスを教えてください。");
+        DDD_LOG_ERROR("引数が足りない。localized用plistファイルへのパスを教えてください。");
         exit(EXIT_FAILURE);
     }
     
     int i;
     for(i=0; i<argc; i++)
     {
-        DDD_LOG("%s", argv[i]);
+        printf("%s\n", argv[i]);
     }
     
     

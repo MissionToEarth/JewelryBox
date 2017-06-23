@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		3D3EE5DC1EFA542700B0DA65 /* StringUtilties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D3EE5DA1EFA542700B0DA65 /* StringUtilties.cpp */; };
-		3D3EE5E81EFA817900B0DA65 /* C_mix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D3EE5E31EFA817900B0DA65 /* C_mix.cpp */; };
 		3D3EE5E91EFA817900B0DA65 /* LocalizedPlist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D3EE5E51EFA817900B0DA65 /* LocalizedPlist.cpp */; };
 		3D3EE5EA1EFA817900B0DA65 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D3EE5E71EFA817900B0DA65 /* main.cpp */; };
 /* End PBXBuildFile section */
@@ -32,8 +31,6 @@
 		3D3EE5D81EFA542700B0DA65 /* macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = macros.h; path = "../../libs/C++/macros.h"; sourceTree = "<group>"; };
 		3D3EE5DA1EFA542700B0DA65 /* StringUtilties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringUtilties.cpp; sourceTree = "<group>"; };
 		3D3EE5DB1EFA542700B0DA65 /* StringUtilties.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StringUtilties.hpp; sourceTree = "<group>"; };
-		3D3EE5E31EFA817900B0DA65 /* C_mix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = C_mix.cpp; sourceTree = "<group>"; };
-		3D3EE5E41EFA817900B0DA65 /* C_mix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = C_mix.h; sourceTree = "<group>"; };
 		3D3EE5E51EFA817900B0DA65 /* LocalizedPlist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LocalizedPlist.cpp; sourceTree = "<group>"; };
 		3D3EE5E61EFA817900B0DA65 /* LocalizedPlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalizedPlist.h; sourceTree = "<group>"; };
 		3D3EE5E71EFA817900B0DA65 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -107,8 +104,6 @@
 		3D3EE5E21EFA817900B0DA65 /* Class */ = {
 			isa = PBXGroup;
 			children = (
-				3D3EE5E31EFA817900B0DA65 /* C_mix.cpp */,
-				3D3EE5E41EFA817900B0DA65 /* C_mix.h */,
 				3D3EE5E51EFA817900B0DA65 /* LocalizedPlist.cpp */,
 				3D3EE5E61EFA817900B0DA65 /* LocalizedPlist.h */,
 			);
@@ -189,7 +184,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D3EE5E81EFA817900B0DA65 /* C_mix.cpp in Sources */,
 				3D3EE5DC1EFA542700B0DA65 /* StringUtilties.cpp in Sources */,
 				3D3EE5EA1EFA817900B0DA65 /* main.cpp in Sources */,
 				3D3EE5E91EFA817900B0DA65 /* LocalizedPlist.cpp in Sources */,

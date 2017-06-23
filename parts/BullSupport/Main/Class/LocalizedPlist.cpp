@@ -117,7 +117,7 @@ int Plist::Resolve(const std::string &filepath)
         pos = source.find(TAG_CONFLICT_HEAD, ++pos);
     }
     
-    WriteFile("/Users/t-harada/Documents/d3_develop/Resouce/ceb_plot.plist", source);
+    WriteFile(filepath.c_str(), source);
     
     return 0;
 }
