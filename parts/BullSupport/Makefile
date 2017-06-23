@@ -17,9 +17,10 @@ endif
 
 .PHONY:$(APPLICATION)
 $(APPLICATION): $(OUTDIR)/main.o $(OUTDIR)/LocalizedPlist.o
-	-mkdir $(OUTDIR)/
 	$(CXX) -std=c++11 -lc $(INCLUDE) -DDEBUG -o $@ $^
 $(OUTDIR)/main.o: Main/main.cpp
+	-mkdir $(OUTDIR)/
 	$(CXX) -std=c++11 -lc $(INCLUDE) -DDEBUG -o $@ -c $^
 $(OUTDIR)/LocalizedPlist.o: Main/Class/LocalizedPlist.cpp
+	-mkdir $(OUTDIR)/
 	$(CXX) -std=c++11 -lc $(INCLUDE) -DDEBUG -o $@ -c $^

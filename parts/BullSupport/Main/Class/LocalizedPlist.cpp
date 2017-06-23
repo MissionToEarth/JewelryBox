@@ -60,7 +60,7 @@ int Plist::Resolve(const std::string &filepath)
     string source = m_source;
     if (source.find(R"(<plist )") == string::npos)
     {
-        DDD_LOG("指定されたファイルは、plistではありません。");
+        DDD_LOG_ERROR("%s : << 指定されたファイルは、plistではありません。",filepath.c_str());
         assert(false);
         exit(EXIT_FAILURE);
     }
