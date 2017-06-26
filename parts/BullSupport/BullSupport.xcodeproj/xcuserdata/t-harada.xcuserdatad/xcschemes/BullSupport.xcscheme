@@ -63,7 +63,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/------------------.plist"
+            argument = "/Users/t-harada/Documents/d3_develop/Resouce/conflict_tmp.plist"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

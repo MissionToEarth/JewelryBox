@@ -1,26 +1,21 @@
-APPLICATION := ResolveLoclizedPlist
-CXX := clang++
-CFLAGS = -M -rdynamic 
-CXXFLAGS :=
-APP_LDFLAGS = -latomic
-INCLUDE := -I./Main/ -I./Main/Class/ -I../../libs/C++
-SRCS := Main/main.cpp
-SRCS += Main/Class/LocalizedPlist.cpp
-OBJS := $(SRCS:%.cpp=%.o)
-OUTDIR := Build
-
-ifeq (ad,ad)
-CFLAGS += -g -Isub_dir
+USER_FLAG = 0
+TARGET := ResolveLoclizedPlist
+INCLUDE := -I./Main/ -I./Main/Class/
+CXX := g++
+CFLAGS := $(INCLUDE)
+ifeq ($(USER_FLAG), debug)
+CFLAGS += -g
 endif
+CXXFLAGS := $(CFLAGS) -std=c++11
+LDFLAGS := -lc
+SRCS := $(wildcard ./Main/*.cpp) $(wildcard Main/Class/*.cpp)
+OBJS := $(SRCS:%.cpp=%.o)
 
+all: clean $(OBJS) $(TARGET)
 
+$(TARGET): $(OBJS)
+	$(CXX) -o $@ $^ $(LDFLAGS)
 
-.PHONY:$(APPLICATION)
-$(APPLICATION): $(OUTDIR)/main.o $(OUTDIR)/LocalizedPlist.o
-	$(CXX) -std=c++11 -lc $(INCLUDE) -DDEBUG -o $@ $^
-$(OUTDIR)/main.o: Main/main.cpp
-	-mkdir $(OUTDIR)/
-	$(CXX) -std=c++11 -lc $(INCLUDE) -DDEBUG -o $@ -c $^
-$(OUTDIR)/LocalizedPlist.o: Main/Class/LocalizedPlist.cpp
-	-mkdir $(OUTDIR)/
-	$(CXX) -std=c++11 -lc $(INCLUDE) -DDEBUG -o $@ -c $^
+clean:
+	-rm $(OBJS)
+	-rm $(TARGET)
