@@ -29,15 +29,6 @@
 #include <unordered_map>
 #include <string.h>
 
-#define TAG_CONFLICT_HEAD "<<<<<<<"
-#define TAG_CONFLICT_MID "======="
-#define TAG_CONFLICT_END ">>>>>>>"
-
-#define TAG_KEY  R"(<key>)"
-#define TAG_KEY_CLOSE  R"(</key>)"
-#define TAG_VALUE  R"(<string>)"
-#define TAG_VALUE_CLOSE  R"(</string>)"
-
 
 // 名前空間宣言
 NAMESPACE_OPEN(LocalizedPlist)
@@ -71,16 +62,18 @@ public:
     Plist() = default;
     ~Plist() = default;
     
-    /** plist形式の、key／valueタグをマップに格納する。 */
-    int Pars(const std::string &source);
     
     /** 正常なLocalized Plist を読み込む。key/valueペアのマップを作成する */
     int Resolve(const std::string &filepath);
 private:
+    /** plist形式の、key／valueタグを destination に格納する。
+        以下の形式が繰り返しているものに対応する。(コンフリクトがある場合には対応していない。)
+        <key>xxx</key>\n
+        <string>xxxxx</string>\n    */
+    void Parse(const std::string &source, ASSOCIATIVE_MAP &destination);
+
     int ReadFile(const char* filepath);
     int WriteFile(const char* filepath, const std::string &source);
-    ///
-    ASSOCIATIVE_MAP MakeKeyStringPairs(const std::string &source);
     
 public:
     //テストコード
@@ -102,11 +95,17 @@ std::string GetConflictUnit(const std::string &source, std::string::size_type cu
 
 
 /**
-    [要注意]：[2017年6月21日]現時点で 全ての文字列が UTF-8 である事を想定。　＝＞　全角文字への対応をしなければならない。
+    [要注意]：[2017年6月21日]現時点で 全ての文字列が UTF-8 である事を想定。
+    また、全角文字への対応は特にしていない。
  */
 
 /** 文字列のSplit */
 //std::vector<std::string> Split(std::string &source, const char delimiter[]);
+
+
+/** タグに囲まれた、文字列を返す */
+std::string FindTagValue(const std::string &source, std::string open_tag, std::string close_tag, std::string::size_type cur_pos);
+
 
 /** 文字列の範囲指定による置換：begin〜end の範囲を置き換える */
 void ReplaceWithRange(std::string &source, std::string::size_type begin, std::string::size_type end, const std::string replace);

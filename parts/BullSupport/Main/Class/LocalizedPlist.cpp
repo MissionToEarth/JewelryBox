@@ -12,6 +12,19 @@
 using namespace std;
 using namespace ALICE;
 
+
+/** plistの解析に使うキーワード */
+#define TAG_CONFLICT_HEAD "<<<<<<<"
+#define TAG_CONFLICT_MID "======="
+#define TAG_CONFLICT_END ">>>>>>>"
+
+#define TAG_KEY  R"(<key>)"
+#define TAG_KEY_CLOSE  R"(</key>)"
+#define TAG_VALUE  R"(<string>)"
+#define TAG_VALUE_CLOSE  R"(</string>)"
+
+
+
 //  名前空間宣言
 NAMESPACE_OPEN(LocalizedPlist)
 
@@ -28,30 +41,6 @@ static void DumpPairs(Plist::ASSOCIATIVE_MAP pairs)
 
 
 #pragma mark - Member of Plist
-
-int Plist::Pars(const std::string &source)
-{
-    string key("");
-    string value("");
-    string::size_type close_n = 0;
-    for (string::size_type n = 0; (n = source.find(TAG_KEY, n)) != string::npos; n++)
-    {
-        //コンフリクトに未対応。
-        n += strlen(TAG_KEY);
-        close_n = source.find(TAG_KEY_CLOSE, n);
-        key = source.substr(n, close_n - n);
-        
-        n = source.find(TAG_VALUE, n);
-        n += strlen(TAG_VALUE);
-        close_n = source.find(TAG_VALUE_CLOSE, n);
-        value = source.substr(n, close_n - n);
-        
-        m_values.insert(std::make_pair(key, value));
-    }
-    DumpPairs(m_values);
-    
-    return 0;
-}
 
 
 int Plist::Resolve(const std::string &filepath)
@@ -72,7 +61,7 @@ int Plist::Resolve(const std::string &filepath)
         return 0;
     }
     
-    //コンフリクトしている場合は...。
+    //コンフリクトしている場合。
     string::size_type pos = source.find(TAG_CONFLICT_HEAD);
     while (pos != string::npos)
     {
@@ -96,8 +85,10 @@ int Plist::Resolve(const std::string &filepath)
         string head = GetConflictPart(conflict, true);
         string changed = GetConflictPart(conflict, false);
         
-        auto head_map = MakeKeyStringPairs(head);
-        auto changed_map = MakeKeyStringPairs(changed);
+        ASSOCIATIVE_MAP head_map;
+        Parse(head, head_map);
+        ASSOCIATIVE_MAP changed_map;
+        Parse(changed, changed_map);
         if (ComparePairs(head_map, changed_map))
         {
             head += changed;
@@ -120,6 +111,26 @@ int Plist::Resolve(const std::string &filepath)
     WriteFile(filepath.c_str(), source);
     
     return 0;
+}
+
+
+void Plist::Parse(const std::string &source, Plist::ASSOCIATIVE_MAP &destination)
+{
+    assert(destination.size() <= 0);
+    string key("");
+    string value("");
+    string::size_type key_n = 0;
+    
+    while( (key_n = source.find(TAG_KEY, key_n)) != string::npos)
+    {
+        // コンフリクトには未対応
+        key = FindTagValue(source, move(TAG_KEY), move(TAG_KEY_CLOSE), key_n);
+        value = FindTagValue(source, move(TAG_VALUE), move(TAG_VALUE_CLOSE), key_n);
+        
+        destination.insert(std::make_pair(key, value));
+        key_n++;
+    }
+    //    DumpPairs(values);
 }
 
 
@@ -157,46 +168,6 @@ int Plist::WriteFile(const char *filepath, const std::string &source)
     ofs.close();
     
     return 0;
-}
-
-
-/** 以下の形式が繰り返しているものに対応する。(コンフリクトがある場合には対応していない。
- <key>xxx</key>\n
- <string>xxxxx</string>\n    */
-Plist::ASSOCIATIVE_MAP Plist::MakeKeyStringPairs(const std::string &source)
-{
-    ASSOCIATIVE_MAP pairs({});
-    
-    //nposが出ない想定でチェック。
-    auto check = [](string::size_type n){
-        if (n == string::npos)
-        {
-            assert(false);
-        }
-    };
-    
-    string key("");
-    string value("");
-    string::size_type close_n = 0;
-    for (string::size_type n = 0; (n = source.find(TAG_KEY, n)) != string::npos; n++)
-    {
-        n += strlen(TAG_KEY);
-        close_n = source.find(TAG_KEY_CLOSE, n);
-        check(close_n);
-        key = source.substr(n, close_n - n);
-        
-        n = source.find(TAG_VALUE, n);
-        check(n);
-        n += strlen(TAG_VALUE);
-        close_n = source.find(TAG_VALUE_CLOSE, n);
-        check(close_n);
-        value = source.substr(n, close_n - n);
-        
-        pairs.insert(std::make_pair(key, value));
-    }
-    
-    
-    return pairs;
 }
 
 
@@ -292,10 +263,12 @@ void Plist::Test()
     string conflict_01 = GetConflictUnit(TEST_DATA, 0);
     DDD_LOG("==GetConflictUnit==\n[%s]", conflict_01.c_str());
     
-    ASSOCIATIVE_MAP changed = p.MakeKeyStringPairs(GetConflictPart(conflict_01, false));
-    ASSOCIATIVE_MAP head = p.MakeKeyStringPairs(GetConflictPart(conflict_01, true) );
-    DumpPairs(head);
+    ASSOCIATIVE_MAP changed({}) ;
+    p.Parse(GetConflictPart(conflict_01, false), changed);
     DumpPairs(changed);
+    ASSOCIATIVE_MAP head({});
+    p.Parse(GetConflictPart(conflict_01, true), head);
+    DumpPairs(head);
     
     DDD_LOG(IsContainsDuplicate(head, changed) ? "重複している　key　がある" : "重複していない key はそれぞれ");
     DDD_LOG(ComparePairs(head, changed) ? "数は一致して、keyはそれぞれに固有" : "意図しない状態");
@@ -372,6 +345,15 @@ std::string GetConflictUnit(const std::string &source, std::string::size_type cu
     
     //        DDD_LOG("%s", ret.c_str());
     return ret;
+}
+
+
+std::string FindTagValue(const std::string &source, std::string open_tag, std::string close_tag, std::string::size_type cur_pos)
+{
+    string::size_type start = source.find(open_tag, cur_pos) + strlen(open_tag.c_str());
+    string::size_type end = source.find(close_tag, start);
+    assert(start <= end);
+    return source.substr(start, end - start);
 }
 
 
