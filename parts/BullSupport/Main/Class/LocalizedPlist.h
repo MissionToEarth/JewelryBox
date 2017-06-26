@@ -33,19 +33,6 @@
 // 名前空間宣言
 NAMESPACE_OPEN(LocalizedPlist)
 
-//げろげろ　めんどい
-//class Conflict
-//{
-//    enum class STATE
-//    {
-//        HEAD,
-//        CHANGED,
-//    };
-//    STATE m_state;
-//    std::string str;
-//    bool Parse(const std::string &data);
-//};
-
 
 /** BULL localized plist への対応 */
 class Plist
