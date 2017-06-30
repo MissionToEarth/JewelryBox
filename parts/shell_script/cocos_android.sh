@@ -17,7 +17,7 @@ elif [[ ${1} = "debug" ]]; then
 	echo debug build
 elif [[ ${1} = "gradle" ]]; then
 	# source ~/.bash_profile
-	wonderplanet_crashfeaver_bull_
+	wonderplanet_bull_
 	cd ./Application
 	./gradlew clean check assembleRelease crashlyticsUploadSymbolsRelease
 	echo $!
@@ -29,7 +29,7 @@ elif [[ ${1} = "gradle" ]]; then
 	exit 0	
 elif [[ ${1} = "install" ]]; then
 	# source ~/.bash_profile
-	wonderplanet_crashfeaver_bull_
+	wonderplanet_bull_
 	cd ./Application
 	adb install -r ./proj.android/build/outputs/apk/proj.android-release.apk
 	echo $!
@@ -44,7 +44,7 @@ echo "option" ${cmd_param}
 
 # source ~/.bash_profile
 
-wonderplanet_crashfeaver_bull_
+wonderplanet_bull_
 
 # gradlewについて、スクリプトがあるディレクトリに移動してから実行しないといけないらしいため移動させた
 cd ./Application
