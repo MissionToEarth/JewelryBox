@@ -1,7 +1,8 @@
-#!/bin/bash -eu
-
+#!/bin/bash
 # cocos2dx android
 #　WP:BULLのAndroidビルド　実行まで。
+set -eu
+
 
 #中断した場合のトラップ （Ctrl+Cなどの場合）
 trap "echo trap00;  exit 1" SIGINT
@@ -18,7 +19,7 @@ elif [[ ${1} = "gradle" ]]; then
 	# source ~/.bash_profile
 	wonderplanet_crashfeaver_bull_
 	cd ./Application
-	./gradlew clean check assembleRelease
+	./gradlew clean check assembleRelease crashlyticsUploadSymbolsRelease
 	echo $!
 	echo $?
 	adb install -r ./proj.android/build/outputs/apk/proj.android-release.apk
@@ -57,7 +58,7 @@ echo -e '\a'
 # 問題　ビルドに失敗した場合　も　継続してしまう　ひどい
 
 
-./gradlew clean check assembleRelease
+./gradlew clean check assembleRelease crashlyticsUploadSymbolsRelease
 
 echo $!
 echo $?
