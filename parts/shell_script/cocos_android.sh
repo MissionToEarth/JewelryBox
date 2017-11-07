@@ -10,6 +10,8 @@ trap "echo trap00;  exit 1" SIGINT
 #プロジェクトのディレクトリへ移動する。
 cd /Users/t-harada/develop_wp/BULL
 
+# CRASHLYTICS=crashlyticsUploadSymbolsRelease
+
 cmd_param=""
 if [[ ${1} = "release" ]]; then
 	#statements
@@ -21,11 +23,11 @@ elif [[ ${1} = "debug" ]]; then
 elif [[ ${1} = "gradle" ]]; then
 	# source ~/.bash_profile
 	cd ./Application
-	./gradlew clean check assembleRelease crashlyticsUploadSymbolsRelease
-	echo $!
+	./gradlew clean check assembleRelease
+	# echo $!
 	echo $?
 	adb install -r ./proj.android/build/outputs/apk/proj.android-release.apk
-	echo $!
+	# echo $!
 	echo $?
 	echo -e '\a'
 	exit 0	
@@ -33,7 +35,7 @@ elif [[ ${1} = "install" ]]; then
 	# source ~/.bash_profile
 	cd ./Application
 	adb install -r ./proj.android/build/outputs/apk/proj.android-release.apk
-	echo $!
+	# echo $!
 	echo $?
 	echo -e '\a'
 	exit 0
@@ -51,22 +53,23 @@ cd ./Application
 
 ./proj.android/build_native.py ${cmd_param}
 
-echo $!
+# echo $!
 echo $?
 echo -e '\a'
 
 # 問題　ビルドに失敗した場合　も　継続してしまう　ひどい
 
 
-./gradlew clean check assembleRelease crashlyticsUploadSymbolsRelease
+./gradlew clean check assembleRelease
 
-echo $!
+# echo $!
 echo $?
 echo -e '\a'
 
+APK_DIR="./proj.android/build/outputs/apk/"
+find $APK_DIR -type f -name "*.apk" | test `wc -l` -eq 1 && adb install -r `find ${APK_DIR} -type f -name "*.apk"` || open $APK_DIR
 
-adb install -r ./proj.android/build/outputs/apk/proj.android-release.apk
-echo $!
+# echo $!
 echo $?
 echo -e '\a'
 echo -e '\a'
