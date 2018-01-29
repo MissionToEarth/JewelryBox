@@ -20,6 +20,37 @@ namespace StringHelper
     }
 }
 
+void split(char** buf, size_t buf_size, const char* str, const char* delimiter)
+{
+    //文字コードに注意。
+    
+}
+
+std::vector<std::string> split(const std::string& str
+                               , const std::string& delimiter)
+{
+    //読み込みストリーム
+    istringstream iss(str);
+    string tmp;
+    vector<string> res;
+    while(getline(iss, tmp, delimiter)){
+        res.push_back(tmp);
+    }
+    return res;
+}
+
+std::vector<std::string> split(const string &str, char delimiter){
+    vector<string> res;
+    size_t current = 0, found;
+    while((found = str.find_first_of(delimiter, current)) != string::npos){
+        res.push_back(string(str, current, found - current));
+        current = found + 1;
+    }
+    res.push_back(string(str, current, str.size() - current));
+    return res;
+}
+
+
 
 ////ifstreamとofstreamのテスト　メモリに余裕があれば、全部読み込んでから処理するで良い。
 //void func(std::ifstream ifs)
