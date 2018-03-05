@@ -67,10 +67,11 @@ echo $?
 echo -e '\a'
 
 APK_DIR="./proj.android/build/outputs/apk/"
-find $APK_DIR -type f -name "*.apk" | test `wc -l` -eq 1 && adb install -r `find ${APK_DIR} -type f -name "*.apk"` || open $APK_DIR
+find $APK_DIR -type f -name "*.apk" | test `wc -l` -eq 1 && adb install -r `find ${APK_DIR} -type f -name "*.apk"` || adb install -r ./proj.android/build/outputs/apk//proj.android-release.apk || open $APK_DIR
 
 # echo $!
 echo $?
 echo -e '\a'
 echo -e '\a'
-echo -e '\a'
+
+date
