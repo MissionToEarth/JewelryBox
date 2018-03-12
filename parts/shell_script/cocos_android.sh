@@ -74,4 +74,7 @@ echo $?
 echo -e '\a'
 echo -e '\a'
 
+
+curl -X POST --data-urlencode "payload={\"channel\": \"#notify\", \"username\": \"webhookbot\", \"text\": \"ビルドなど終わりましたよ！確認してください by webhookbot.\", \"icon_emoji\": \":ghost:\"}" https://hooks.slack.com/services/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
+
 date
