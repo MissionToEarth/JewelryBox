@@ -75,6 +75,6 @@ echo -e '\a'
 echo -e '\a'
 
 
-curl -X POST --data-urlencode "payload={\"channel\": \"#notify\", \"username\": \"webhookbot\", \"link_names\": true, \"text\": \"<@ultra cat>ビルドなど終わりましたよ！確認してください by webhookbot.\", \"icon_emoji\": \":ghost:\"}" https://hooks.slack.com/services/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
+curl -X POST --data-urlencode "payload={\"channel\": \"#notify\", \"username\": \"webhookbot\", \"text\": \"<@harada> ビルドなど終わりましたよ！確認してください by webhookbot.\", \"icon_emoji\": \":ghost:\"}" https://hooks.slack.com/services/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
 
 date
