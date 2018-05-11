@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     
-    char ret[RESULT_LENGTH]="";
+    char ret[RESULT_LENGTH+1]="";
     MixString(ret, argv[1], strlen(argv[1]), atoi(argv[2]));
     return 0;
 }
