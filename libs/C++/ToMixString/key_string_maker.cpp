@@ -45,6 +45,17 @@ bool ArgumentIsWrong(int argc, char *argv[])
 }
 
 /**
+ *  文字列からキーを抽出する。（指定位置から指定の長さの文字列を取得する。）
+ */
+std::string ExtractionKey(const char* mix_string, const unsigned int position, const unsigned int length)
+{
+    char ret[length+1];
+    strncpy(ret, mix_string+position, length);
+    ret[length]='\0';
+    return ret;
+}
+
+/**
  * @brief:入力文字列をランダムの長い文字列の中に埋め込む。それをプロットする。
  * @param:dest=格納先、input_string入力文字列、key_length入力文字列の長さ、key_position入力文字列を紛れこませる位置
  */
