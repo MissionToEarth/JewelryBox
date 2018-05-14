@@ -5,8 +5,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
+#include <fstream>
 #include <random>
 #include <assert.h>
+#include "picojson.h"
+
 
 #define RESULT_LENGTH 512
 #define HEAD_DIFF 42
@@ -98,5 +101,15 @@ int main(int argc, char *argv[])
     
     char ret[RESULT_LENGTH+1]="";
     MixString(ret, argv[1], strlen(argv[1]), atoi(argv[2]));
+    
+    // 確認で取り出し。
+    std::string ss = ExtractionKey(ret, atoi(argv[2]), strlen(argv[1]));
+    std::cout << "get key :\n" << ss << std::endl;
+
+    //書き込み
+    std::ofstream outputfile("output.txt");
+    outputfile << ss;
+    outputfile.close();
+
     return 0;
 }
