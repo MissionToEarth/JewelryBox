@@ -18,9 +18,12 @@
 #pragma mark - DATA
 
 // 宣言用生成用部品
-#define INCLUDE                 (R"(#include "cocos2dx.h")")
+#define INCLUDE                 (R"(#include "cocos2d.h")")
 #define COMENT_BIGIN    ("/**")
 #define COMENT_END      (" */")
+#define DECL_NS_BEGIN(NAME)     (R"**(namespace )**" #NAME R"**(
+{)**")
+#define DECL_NS_END             (R"**(})**")
 #define DECL_CLASS_BIGIN        (R"**(class KeyStore
 {)**")
 #define DECL_CLASS_END          (R"**(};)**")
@@ -28,7 +31,7 @@
 #define DECL_ENUM_END           (R"**(};)**")
 #define DECL_METHOD             (R"**(std::string getStorageKey(KeyStore::Type type);)**")
 // ヘッダー
-#define HEADER_FILENAME         ("KeyStore.h")
+#define HEADER_FILENAME         ("KeyStore.hpp")
 // ソース
 #define CPP_FILENAME            ("KeyStore.cpp")
 // MARKER of REPLACE
@@ -129,6 +132,7 @@ std::string MakeHeader(picojson::array infos)
             ret += tab; 
         }
         ret += item.get<picojson::object>()[K_KEY_TYPE].get<string>();
+        ret += ",";
         ret += "\n";
     }
     ret += tab + DECL_ENUM_END;
