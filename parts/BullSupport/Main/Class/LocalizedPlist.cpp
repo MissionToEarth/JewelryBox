@@ -12,6 +12,19 @@
 using namespace std;
 using namespace ALICE;
 
+
+/** plistの解析に使うキーワード */
+#define TAG_CONFLICT_HEAD "<<<<<<<"
+#define TAG_CONFLICT_MID "======="
+#define TAG_CONFLICT_END ">>>>>>>"
+
+#define TAG_KEY  R"(<key>)"
+#define TAG_KEY_CLOSE  R"(</key>)"
+#define TAG_VALUE  R"(<string>)"
+#define TAG_VALUE_CLOSE  R"(</string>)"
+
+
+
 //  名前空間宣言
 NAMESPACE_OPEN(LocalizedPlist)
 
@@ -29,72 +42,95 @@ static void DumpPairs(Plist::ASSOCIATIVE_MAP pairs)
 
 #pragma mark - Member of Plist
 
-int Plist::Parse(const std::string &filepath)
+
+int Plist::Resolve(const std::string &filepath)
 {
     ReadFile(filepath.c_str());
     string source = m_source;
-    
-    
-    if (IsConflict(source))
+    if (source.find(R"(<plist )") == string::npos)
     {
-        //コンフリクトしている場合は...。
-        while(1)
-        {
-            auto pos = source.find(TAG_CONFLICT_HEAD);
-            auto front = FindLineFrontWithPosition(source, pos);
-            if (pos != front)
-            {
-                assert(false);
-                continue;
-            }
-            auto last = source.find(TAG_CONFLICT_END);
-            last = FindNextLine(source, last);
-            
-            string conflict = source.substr(front, last - front);
-            DDD_LOG("%s", conflict.c_str());
-            string head = GetConflictPart(conflict, true);
-            string changed = GetConflictPart(conflict, false);
-            
-            auto head_map = MakePairs(head);
-            auto changed_map = MakePairs(changed);
-            if (ComparePairs(head_map, changed_map))
-            {
-                head += changed;
-                DDD_LOG("[%s]", head.c_str());
-                source.replace(front, last - front, head);
-                DDD_LOG("[%s]", source.c_str());
-            }
-            
-            // TODO: 終端に来たらbreak
+        DDD_LOG_ERROR("%s : << 指定されたファイルは、plistではありません。",filepath.c_str());
+        assert(false);
+        exit(EXIT_FAILURE);
+    }
+    
+    
+    if (!IsConflict(source))
+    {
+        DDD_LOG("%s : コンフリクトしていない。", filepath.c_str());
+        return 0;
+    }
+    
+    //コンフリクトしている場合。
+    string::size_type pos = source.find(TAG_CONFLICT_HEAD);
+    while (pos != string::npos)
+    {
+        if (pos == string::npos) {
             break;
         }
-        //　source で上書きするけど、Parse()内部でやったら Parse()じゃなくなっちゃうから移そう。
-        WriteFile("/Users/t-harada/Documents/d3_develop/Resouce/ceb_plot.plist", source);
-        
-    }
-    else
-    {
-        string key("");
-        string value("");
-        string::size_type close_n = 0;
-        for (string::size_type n = 0; (n = source.find(TAG_KEY, n)) != string::npos; n++)
+        auto front = FindLineFrontWithPosition(source, pos);
+        if (pos != front)
         {
-            //コンフリクトに未対応。
-            n += strlen(TAG_KEY);
-            close_n = source.find(TAG_KEY_CLOSE, n);
-            key = source.substr(n, close_n - n);
-            
-            n = source.find(TAG_VALUE, n);
-            n += strlen(TAG_VALUE);
-            close_n = source.find(TAG_VALUE_CLOSE, n);
-            value = source.substr(n, close_n - n);
-            
-            m_values.insert(std::make_pair(key, value));
+            assert(false);
+            continue;
         }
+        auto last = source.find(TAG_CONFLICT_END, pos);
+        last = FindNextLine(source, last);
+        
+        DDD_LOG("%s", source.c_str());
+        assert(front < last);
+        
+        string conflict = source.substr(front, last - front);
+        DDD_LOG("%s", conflict.c_str());
+        string head = GetConflictPart(conflict, true);
+        string changed = GetConflictPart(conflict, false);
+        
+        ASSOCIATIVE_MAP head_map;
+        Parse(head, head_map);
+        ASSOCIATIVE_MAP changed_map;
+        Parse(changed, changed_map);
+        if (ComparePairs(head_map, changed_map))
+        {
+            head += changed;
+            DDD_LOG("[%s]", head.c_str());
+            source.replace(front, last - front, head);
+            DDD_LOG("[%s]", source.c_str());
+            pos = front;//ソース更新に対応するため、位置を戻す
+        }
+        else if (head_map.size() <= 0 && changed_map.size() <= 0 && NotMatchStringValue(head, changed))
+        {
+            DDD_LOG("[%s]", changed.c_str());
+            source.replace(front, last - front, changed);
+            DDD_LOG("[%s]", source.c_str());
+            pos = front;//ソース更新に対応するため、位置を戻す
+        }
+        
+        pos = source.find(TAG_CONFLICT_HEAD, ++pos);
     }
-    DumpPairs(m_values);
+    
+    WriteFile(filepath.c_str(), source);
     
     return 0;
+}
+
+
+void Plist::Parse(const std::string &source, Plist::ASSOCIATIVE_MAP &destination)
+{
+    assert(destination.size() <= 0);
+    string key("");
+    string value("");
+    string::size_type key_n = 0;
+    
+    while( (key_n = source.find(TAG_KEY, key_n)) != string::npos)
+    {
+        // コンフリクトには未対応
+        key = FindTagValue(source, move(TAG_KEY), move(TAG_KEY_CLOSE), key_n);
+        value = FindTagValue(source, move(TAG_VALUE), move(TAG_VALUE_CLOSE), key_n);
+        
+        destination.insert(std::make_pair(key, value));
+        key_n++;
+    }
+    //    DumpPairs(values);
 }
 
 
@@ -104,7 +140,7 @@ int Plist::ReadFile(const char* filepath)
     if (ifs.fail())
     {
         ifs.close();
-        DDD_LOG_WARN("ifstream 失敗 : %s", filepath);
+        DDD_LOG_WARN("ifstream で file open に失敗 : %s", filepath);
         assert(false);
         exit(EXIT_FAILURE);
     }
@@ -123,58 +159,20 @@ int Plist::WriteFile(const char *filepath, const std::string &source)
     if (ofs.fail())
     {
         ofs.close();
-        DDD_LOG_WARN("ofstream 失敗 : %s", filepath);
+        DDD_LOG_WARN("ofstream で file open に失敗 : %s", filepath);
         assert(false);
         exit(EXIT_FAILURE);
     }
     
     ofs.write(source.c_str(), source.size());
+    ofs.close();
+    
     return 0;
 }
 
 
-/** 以下の形式が繰り返しているものに対応する。コンフリクトがある場合には対応していない。
- <key>xxx</key>\n
- <string>xxxxx</string>\n    */
-Plist::ASSOCIATIVE_MAP Plist::MakePairs(const std::string &source)
-{
-    ASSOCIATIVE_MAP pairs({});
-    
-    //nposが出ない想定でチェック。
-    auto check = [](string::size_type n){
-        if (n == string::npos)
-        {
-            assert(false);
-        }
-    };
-    
-    string key("");
-    string value("");
-    string::size_type close_n = 0;
-    for (string::size_type n = 0; (n = source.find(TAG_KEY, n)) != string::npos; n++)
-    {
-        //コンフリクトに未対応。
-        n += strlen(TAG_KEY);
-        close_n = source.find(TAG_KEY_CLOSE, n);
-        check(close_n);
-        key = source.substr(n, close_n - n);
-        
-        n = source.find(TAG_VALUE, n);
-        check(n);
-        n += strlen(TAG_VALUE);
-        close_n = source.find(TAG_VALUE_CLOSE, n);
-        check(close_n);
-        value = source.substr(n, close_n - n);
-        
-        pairs.insert(std::make_pair(key, value));
-    }
-    
-    
-    return pairs;
-}
-
-
 #pragma mark - テスト
+
 /** テスト用データ */
 const char* TEST_DATA = R"(<plist version="1.0">
 <dict>
@@ -199,9 +197,9 @@ const char* TEST_DATA = R"(<plist version="1.0">
     <key>Z02（国内版の変更を残す。）</key>
 <<<<<<< HEAD
     <string>睡眠不足バスター</string>
-    =======
+=======
     <string>Z-MAN</string>
-    >>>>>>> issue3
+>>>>>>> issue3
 
 <key>Z03（汚い変更の場合）</key>
 <<<<<<< HEAD
@@ -224,6 +222,10 @@ GoogleEarth
 void Plist::Test()
 {
     {
+        assert(NotMatchStringValue("<string>イロハ</string>","<string>irohas</string>") == true);
+        assert(NotMatchStringValue("<string>あいう\n</string>","<string>あいう\n</string>") == false);
+        assert(NotMatchStringValue("<string>あいう\n</string>","<string>あいう\n</string>\n<string>ddddd</string>") == false);
+        assert(NotMatchStringValue("<string>あああ</string>","<key>あああ</key>") == false);
     }
     {
         string test("abcdefz");
@@ -261,10 +263,12 @@ void Plist::Test()
     string conflict_01 = GetConflictUnit(TEST_DATA, 0);
     DDD_LOG("==GetConflictUnit==\n[%s]", conflict_01.c_str());
     
-    ASSOCIATIVE_MAP changed = p.MakePairs(GetConflictPart(conflict_01, false));
-    ASSOCIATIVE_MAP head = p.MakePairs(GetConflictPart(conflict_01, true) );
-    DumpPairs(head);
+    ASSOCIATIVE_MAP changed({}) ;
+    p.Parse(GetConflictPart(conflict_01, false), changed);
     DumpPairs(changed);
+    ASSOCIATIVE_MAP head({});
+    p.Parse(GetConflictPart(conflict_01, true), head);
+    DumpPairs(head);
     
     DDD_LOG(IsContainsDuplicate(head, changed) ? "重複している　key　がある" : "重複していない key はそれぞれ");
     DDD_LOG(ComparePairs(head, changed) ? "数は一致して、keyはそれぞれに固有" : "意図しない状態");
@@ -303,8 +307,11 @@ std::string GetConflictPart(const std::string &conflict_unit, bool part)
     DDD_LOG("%s", __PRETTY_FUNCTION__);
     
     string::size_type begin = conflict_unit.find(TAG_CONFLICT_HEAD);
-    assert(begin == 0);
-    if (begin != string::npos)
+    if (begin == string::npos)
+    {
+        begin = 0;
+    }
+    else
     {
         begin = FindNextLine(conflict_unit, begin);
     }
@@ -314,7 +321,7 @@ std::string GetConflictPart(const std::string &conflict_unit, bool part)
     {
         //HEAD部取得
         string head = conflict_unit.substr(begin, mid_pos - begin);
-        DDD_LOG("%s",head.c_str());
+        DDD_LOG("===%s",head.c_str());
         return head;
     }
     else
@@ -323,7 +330,7 @@ std::string GetConflictPart(const std::string &conflict_unit, bool part)
         mid_pos = FindNextLine(conflict_unit, mid_pos);
         string changed = conflict_unit.substr(mid_pos);
         EraseFindLine(changed, TAG_CONFLICT_END, 1);
-        DDD_LOG("%s", changed.c_str());
+        DDD_LOG("===%s", changed.c_str());
         return changed;
     }
 }
@@ -338,6 +345,15 @@ std::string GetConflictUnit(const std::string &source, std::string::size_type cu
     
     //        DDD_LOG("%s", ret.c_str());
     return ret;
+}
+
+
+std::string FindTagValue(const std::string &source, std::string open_tag, std::string close_tag, std::string::size_type cur_pos)
+{
+    string::size_type start = source.find(open_tag, cur_pos) + strlen(open_tag.c_str());
+    string::size_type end = source.find(close_tag, start);
+    assert(start <= end);
+    return source.substr(start, end - start);
 }
 
 
@@ -406,7 +422,7 @@ void EraseFindLine(std::string &source, const std::string &search_string, short 
             //先頭にある場合のみ消す。
         {
             string::size_type pos = source.find(search_string);
-            typeof(pos) front = 0;
+            decltype(pos) front = 0;
             while( pos != string::npos )
             {
                 front = FindLineFrontWithPosition(source, pos);
@@ -436,7 +452,7 @@ std::string EraseConflictSymbols(const std::string &source)
 {
     std::string ret(source);
     std::string::size_type conflict_line = 0;
-    typeof(conflict_line) next_line = 0;
+    decltype(conflict_line) next_line = 0;
     while(conflict_line != string::npos)
     {
         conflict_line = ret.find(TAG_CONFLICT_HEAD, conflict_line);
@@ -497,7 +513,60 @@ bool IsContainsDuplicate(const Plist::ASSOCIATIVE_MAP &left, const Plist::ASSOCI
 
 bool ComparePairs(const Plist::ASSOCIATIVE_MAP &p1, const Plist::ASSOCIATIVE_MAP &p2)
 {
+    if (p1.size() <= 0 || p2.size() <= 0 || p1.size() != p2.size())
+    {
+        return false;
+    }
+    for(auto v : p1)
+    {
+        if (p2.find(v.first) != p2.end())
+        {
+            return false;
+        }
+    }
+    
     return true;
+}
+
+/** <string>タグの内容が異なっていればtrue */
+bool NotMatchStringValue(const std::string &left, const std::string &right)
+{
+    //チェック
+    if(   left.find(TAG_VALUE)==string::npos        || right.find(TAG_VALUE)==string::npos
+       || left.find(TAG_VALUE_CLOSE)==string::npos  || right.find(TAG_VALUE_CLOSE)==string::npos
+       || left.find(TAG_KEY)!=string::npos          || right.find(TAG_KEY)!=string::npos
+       || left.find(TAG_KEY_CLOSE)!=string::npos    || right.find(TAG_KEY_CLOSE)!=string::npos)
+    {
+        return false;
+    }
+    
+    {
+        //タグが2個以上含まれているか？
+        auto pos = left.find(TAG_VALUE);
+        if (left.find(TAG_VALUE, ++pos) != string::npos )
+        {
+            return false;
+        }
+        pos = right.find(TAG_VALUE);
+        if (right.find(TAG_VALUE, ++pos) != string::npos )
+        {
+            return false;
+        }
+    }
+    
+    auto find_value = [](const std::string &str){
+        string::size_type pos = str.find(TAG_VALUE) + strlen(TAG_VALUE);
+        decltype(pos) last = str.find(TAG_VALUE_CLOSE);
+        return str.substr(pos, last - pos);
+    };
+    string l = find_value(left);
+    string r = find_value(right);
+    
+    if (l != r)
+    {
+        return  true;
+    }
+    return false;
 }
 
 NAMESPACE_CLOSE(LocalizedPlist)
