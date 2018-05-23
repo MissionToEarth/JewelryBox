@@ -38,7 +38,7 @@ def create_itimatsu_pattern(Vector2, x_num, y_num):
 			start_pos = (width * j, height * i)
 			end_pos = (start_pos[0] + width, start_pos[1] + height) 
 	im.save("itimatsu.png")
-	im.show()
+	# im.show()
 	return
 
 
@@ -69,20 +69,21 @@ def create_dummy_atlas_image(imagesize, col, row):
 	cnt = 0
 	for i in range(row):
 		for j in range(col):
-			font = ImageFont.load_default()
+			# font = ImageFont.load_default()
+			font = ImageFont.truetype("/Users/D3/Documents/_private_resource/Callie Hegstrom/Magnolia Merchant Font Family/Font Family/Web Fonts/Script/MagnoliaMerchant-Script.ttf", 150)
 			s = font.getsize(str(cnt)) # テキストサイズ補正
 			adjust = (s[0] * 0.5, s[1] * 0.5)
-			draw.text(( j * width + x - adjust[0], i * height + y - adjust[1]), str(cnt))
+			draw.text(( j * width + x - adjust[0], i * height + y - adjust[1]), str(cnt), font=font)
 			cnt += 1
 	out = Image.alpha_composite(im, im2)
-	out.show()
+	# out.show()
 	im.save('ttttt01.png')
 	im2.save('ttttt02.png')
 	out.save('ttttt03.png')
 	return im
 
-create_dummy_image("RGB", (128,128), 3)
-create_dummy_atlas_image( (1024,1024), 6, 3)
-create_checkered_pattern(Vector2(128,128), 3, 10)
+# create_dummy_image("RGB", (128,128), 3)
+create_dummy_atlas_image( (1024,1024), 5, 5)
+# create_checkered_pattern(Vector2(128,128), 3, 10)
 
 # if __name__ == main():
