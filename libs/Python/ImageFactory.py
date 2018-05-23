@@ -7,13 +7,23 @@ from PIL import Image, ImageDraw, ImageFont
 from collections import namedtuple
 Vector2 = namedtuple('Vector2', ('x','y'))
 
-def create_checkered_pattern(image_size, x_num, y_num):
+# MySystemUtilitiesに移動
+import os
+def should_make_dir(dir_name):
+	if not os.path.isdir(dir_name) :
+		os.mkdir(dir_name)
+
+
+# とりあえず定数
+OUTPUT_DIR = "./output"
+
+def create_checkered_pattern(image_size, x_num, y_num, filename):
 	"""
 	@breif: 市松模様を作る。これは英語でチェックだったと思い追加。
 	"""
-	create_itimatsu_pattern(image_size, x_num, y_num)
+	create_itimatsu_pattern(image_size, x_num, y_num, filename)
 
-def create_itimatsu_pattern(Vector2, x_num, y_num):
+def create_itimatsu_pattern(Vector2, x_num, y_num, filename):
 	"""
 	@breif: 市松模様を作る。
 	"""
@@ -37,7 +47,8 @@ def create_itimatsu_pattern(Vector2, x_num, y_num):
 			imDraw.rectangle([start_pos, end_pos], color, color)
 			start_pos = (width * j, height * i)
 			end_pos = (start_pos[0] + width, start_pos[1] + height) 
-	im.save("itimatsu.png")
+	should_make_dir(OUTPUT_DIR)
+	im.save(OUTPUT_DIR + "/" + filename)
 	# im.show()
 	return
 
@@ -47,12 +58,14 @@ def create_dummy_image(mode, imagesize, num):
 	@brief:ナンバリングした画像を連番で生成。（ダミー用
 	@param:mode、イメージ全体サイズ、個数、
 	"""
+	should_make_dir(OUTPUT_DIR)
+
 	im = Image.new(mode, imagesize)
 	draw = ImageDraw.Draw(im)
 	font = ImageFont.load_default()
 	for i in range(num):
 		s = font.getsize(str(i)) # テキストサイズ補正
-		im.save("name_" + str(i) + ".png")
+		im.save(OUTPUT_DIR + "/" + "name_" + str(i) + ".png")
 
 def create_dummy_atlas_image(imagesize, col, row):
 	"""
@@ -77,13 +90,13 @@ def create_dummy_atlas_image(imagesize, col, row):
 			cnt += 1
 	out = Image.alpha_composite(im, im2)
 	# out.show()
-	im.save('ttttt01.png')
-	im2.save('ttttt02.png')
-	out.save('ttttt03.png')
+	im.save(OUTPUT_DIR + "/" + 'ttttt01.png')
+	im2.save(OUTPUT_DIR + "/" + 'ttttt02.png')
+	out.save(OUTPUT_DIR + "/" + 'ttttt03.png')
 	return im
 
-# create_dummy_image("RGB", (128,128), 3)
+create_dummy_image("RGB", (128,128), 3)
 create_dummy_atlas_image( (1024,1024), 5, 5)
-# create_checkered_pattern(Vector2(128,128), 3, 10)
+create_checkered_pattern(Vector2(128,128), 3, 10, "ITIMATSU.png")
 
 # if __name__ == main():
