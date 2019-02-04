@@ -1,0 +1,3 @@
+[submodule "iosmobile_build_system"]
+	path = iosmobile_build_system
+	url = https://github.com/MissionToEarth/SubmoduleTest.git
