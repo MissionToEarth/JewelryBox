@@ -9,6 +9,7 @@ trap "echo trap00;  exit 1" SIGINT
 
 #プロジェクトのディレクトリへ移動する。
 cd /Users/t-harada/develop_wp/BULL
+pwd
 
 # CRASHLYTICS=crashlyticsUploadSymbolsRelease
 
